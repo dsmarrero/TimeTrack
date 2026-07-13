@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Employee {
+  id        String    @id @default(cuid())
+  name      String
+  email     String    @unique
+  role      Role      @default(EMPLOYEE)
+  active    Boolean   @default(true)
+  timeEntries TimeEntry[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Project{
+  id  String  @id @default(cuid())
+  name  String
+  description String?
+  active  Boolean @default(true)
+  timeEntries TimeEntry[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model TimeEntry{
+  id  String  @id @default(cuid())
+  employeeId  String
+  projectId   String
+  startedAt   DateTime
+  endedAt     DateTime?
+  durationMin Int?
+  note    String?
+  employee  Employee  @relation(fields: [employeeId], references: [id])
+  project Project   @relation(fields: [projectId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index ([employeeId])
+  @@index ([projectId])
+}
+
+enum Role{
+  ADMIN
+  EMPLOYEE
+}
