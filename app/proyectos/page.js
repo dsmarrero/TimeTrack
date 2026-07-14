@@ -16,7 +16,7 @@ export default async function ProjectsPage() {
       <ul>
         {projects.map((project) => (
           <li key={project.id}>
-            <Link href={`/proyectos/${project.id}`}>{project.name}</Link> — {project.description} - {project.active}
+            <Link href={`/proyectos/${project.id}`}>{project.name}</Link> - {project.description} - {project.active ? "Activo" : "Inactivo"}
           </li>
         ))}
       </ul>
