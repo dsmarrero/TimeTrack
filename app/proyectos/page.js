@@ -11,7 +11,7 @@ export default async function ProjectsPage() {
       <ul>
         {projects.map((project) => (
           <li key={project.id}>
-            {project.name} — {project.description}
+            {project.name} — {project.description} - {project.active}
           </li>
         ))}
       </ul>

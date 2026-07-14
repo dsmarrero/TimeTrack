@@ -1,1 +1,164 @@
 @AGENTS.md
+Monitor prácticas empresa. Yo alumno bootcamp full-stack ironhack. Guía esto:
+
+# Especificación de Proyecto: TimeTrack
+
+Sistema seguimiento tiempo por proyecto y empleado.
+
+## 1. Objetivo del Proyecto
+
+Desarrollar app web: gestiona proyectos y empleados, registra tiempo dedicado vía cronómetro.
+
+**Alcance funcional principal:**
+
+* Alta, edición, baja (lógica) proyectos.
+* Alta, edición, baja (lógica) empleados.
+* Selector proyecto activo + cronómetro (iniciar/detener).
+* Registro histórico sesiones tiempo (editable manual).
+* Listado y filtros tiempo: por proyecto, por empleado, por rango fechas.
+* Autenticación usuarios + control acceso por roles (admin/empleado).
+
+## 2. Stack Tecnológico
+
+| Capa | Tecnología |
+| --- | --- |
+| Framework | Next.js 14+ (App Router) |
+| Lenguaje | TypeScript |
+| ORM | Prisma |
+| Base de datos | PostgreSQL |
+| Estilos | Tailwind CSS |
+| Autenticación | **FIREBASE** |
+| Validación | **NO** |
+| Estado en cliente | React Query / Server Actions |
+| Despliegue sugerido | **NO** |
+
+*Notas adicionales:*
+
+* *Anotación manual: "No GITHUB"*
+
+## 3. Modelo de Datos (Prisma)
+
+```prisma
+model Employee {
+  id          String      @id @default(cuid())
+  name        String
+  email       String      @unique
+  role        Role        @default(EMPLOYEE)
+  active      Boolean     @default(true)
+  timeEntries TimeEntry[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Project {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  active      Boolean     @default(true)
+  timeEntries TimeEntry[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model TimeEntry {
+  id         String   @id @default(cuid())
+  employeeId String
+  projectId  String
+  startedAt  DateTime
+  endedAt    DateTime?
+  durationMin Int?
+  note       String?
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  project    Project  @relation(fields: [projectId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([projectId])
+}
+
+enum Role {
+  ADMIN
+  EMPLOYEE
+}
+
+```
+
+*Nota: `endedAt` nulo = cronómetro activo. `durationMin` calcula al cerrar entrada.*
+
+## 4. Funcionalidades Detalladas
+
+### 4.1 Gestión de proyectos
+
+* CRUD proyectos (nombre, descripción, estado activo/inactivo).
+* Listado con buscador + filtro por estado.
+* Vista detalle: tiempo total acumulado + desglose por empleado.
+
+### 4.2 Gestión de empleados
+
+* CRUD empleados (nombre, email, rol, estado activo/inactivo).
+* Solo admin crea, edita, desactiva empleados.
+* Vista detalle: historial tiempo por proyecto.
+
+### 4.3 Cronómetro de tiempo
+
+* Selección proyecto activo.
+* Botón **Iniciar**: crea entrada, `startedAt = ahora`, `endedAt = null`.
+* Botón **Detener**: actualiza `endedAt`, calcula duración.
+* Validación: no iniciar nuevo si ya hay uno activo (servidor).
+* Persiste estado si se cierra navegador.
+
+### 4.4 Edición del histórico
+
+* Listado entradas editable (fecha/hora inicio/fin, proyecto, nota).
+* Creación entradas manuales.
+* Confirmación antes de eliminar.
+
+### 4.5 Informes
+
+* Tiempo total por proyecto y por empleado (rango fechas).
+* Tabla cruzada proyecto x empleado.
+* Exportación a CSV.
+
+## 5. Autenticación y Roles
+
+| Rol | Permisos |
+| --- | --- |
+| Administrador | Acceso total: gestión proyectos, empleados, edición cualquier entrada, ve todos informes. |
+| Empleado | Solo inicia/detiene su propio cronómetro, edita sus propias entradas, ve sus propios informes. |
+
+*Toda mutación servidor valida sesión y rol.*
+
+## 6. Estructura de Pantallas Sugerida
+
+* `/login`
+* `/dashboard` (cronómetro, accesos rápidos, resumen del día)
+* `/proyectos` (listado)
+* `/proyectos/[id]` (detalle y tiempo acumulado)
+* `/empleados` (listado - solo admin)
+* `/empleados/[id]` (detalle e historial)
+* `/tiempos` (histórico editable)
+* `/informes` (agregados y filtros)
+
+## 7. Buenas Prácticas
+
+* Arquitectura por capas.
+* Manejo errores consistente.
+* Tipado estricto (sin `any`).
+* Componentes reutilizables.
+* Migraciones Prisma versionadas.
+* Variables entorno para credenciales.
+
+## 8. Entregables
+
+* README (instalación, variables, comandos Prisma).
+* Script seed (datos ejemplo).
+* App desplegada.
+
+## 9. Extras Opcionales
+
+* Gráficas tiempo (ej. Recharts).
+* Notificación si cronómetro lleva activo demasiado tiempo.
+* Modo oscuro.
+* Exportación informes a PDF.
+* Registro auditoría de cambios.
