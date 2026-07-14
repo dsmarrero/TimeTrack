@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentEmployee } from "@/lib/session";
+import ProjectEditForm from "./ProjectEditForm";
 
 function formatMinutes(minutes) {
   const h = Math.floor(minutes / 60);
@@ -57,6 +58,8 @@ export default async function ProjectDetailPage({ params }) {
       <h1>{project.name}</h1>
       <p>{project.description}</p>
       <p>Tiempo total: {formatMinutes(totalMinutes)}</p>
+
+      {isAdmin && <ProjectEditForm project={project} />}
 
       <h2>Desglose por empleado</h2>
       <ul>
