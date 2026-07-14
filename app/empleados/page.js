@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getCurrentEmployee } from "@/lib/session";
 import EmployeeForm from "./EmployeeForm";
@@ -18,7 +19,7 @@ export default async function EmployeesPage() {
       <ul>
         {employees.map((employee) => (
           <li key={employee.id}>
-            {employee.name} — {employee.email} — {employee.role} - {employee.active}
+            <Link href={`/empleados/${employee.id}`}>{employee.name}</Link> — {employee.email} — {employee.role} - {employee.active}
           </li>
         ))}
       </ul>
