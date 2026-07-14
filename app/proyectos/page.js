@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ProjectForm from "./ProjectForm";
 
@@ -11,7 +12,7 @@ export default async function ProjectsPage() {
       <ul>
         {projects.map((project) => (
           <li key={project.id}>
-            {project.name} — {project.description} - {project.active}
+            <Link href={`/proyectos/${project.id}`}>{project.name}</Link> — {project.description} - {project.active}
           </li>
         ))}
       </ul>
