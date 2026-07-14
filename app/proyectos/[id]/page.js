@@ -15,12 +15,13 @@ export default async function ProjectDetailPage({ params }) {
   }
 
   const { id } = await params;
+  const isAdmin = currentEmployee.role === "ADMIN";
 
   const project = await prisma.project.findUnique({
     where: { id },
     include: {
       timeEntries: {
-        where: { durationMin: { not: null } },
+        where: isAdmin ? {} : { employeeId: currentEmployee.id },
         include: { employee: true },
       },
     },
@@ -30,13 +31,21 @@ export default async function ProjectDetailPage({ params }) {
     notFound();
   }
 
-  const totalMinutes = project.timeEntries.reduce(
+  if (!isAdmin && project.timeEntries.length === 0) {
+    redirect("/proyectos");
+  }
+
+  const completedEntries = project.timeEntries.filter(
+    (entry) => entry.durationMin !== null
+  );
+
+  const totalMinutes = completedEntries.reduce(
     (sum, entry) => sum + entry.durationMin,
     0
   );
 
   const byEmployee = new Map();
-  for (const entry of project.timeEntries) {
+  for (const entry of completedEntries) {
     const key = entry.employeeId;
     const current = byEmployee.get(key) ?? { name: entry.employee.name, minutes: 0 };
     current.minutes += entry.durationMin;
