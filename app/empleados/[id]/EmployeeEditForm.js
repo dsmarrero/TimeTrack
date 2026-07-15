@@ -1,10 +1,20 @@
 'use client'
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { updateEmployee } from "../actions";
 
 export default function EmployeeEditForm({ employee }) {
   const [state, formAction, isPending] = useActionState(updateEmployee, { error: null });
+  const router = useRouter();
+  const wasPending = useRef(false);
+
+  useEffect(() => {
+    if (wasPending.current && !isPending && !state.error) {
+      router.refresh();
+    }
+    wasPending.current = isPending;
+  }, [isPending, state, router]);
 
   return (
     <form action={formAction}>

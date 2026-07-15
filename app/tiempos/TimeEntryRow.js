@@ -1,6 +1,7 @@
 'use client';
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { updateTimeEntry, deleteTimeEntry } from "./actions";
 
 function toLocalInput(date) {
@@ -13,6 +14,16 @@ export default function TimeEntryRow({ entry, projects, isAdmin }) {
   const [editing, setEditing] = useState(false);
   const [updateState, updateAction, updatePending] = useActionState(updateTimeEntry, { error: null });
   const [deleteState, deleteAction, deletePending] = useActionState(deleteTimeEntry, { error: null });
+  const router = useRouter();
+  const wasUpdatePending = useRef(false);
+
+  useEffect(() => {
+    if (wasUpdatePending.current && !updatePending && !updateState.error) {
+      setEditing(false);
+      router.refresh();
+    }
+    wasUpdatePending.current = updatePending;
+  }, [updatePending, updateState, router]);
 
   if (editing) {
     return (
