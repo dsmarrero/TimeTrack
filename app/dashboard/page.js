@@ -7,7 +7,7 @@ import Cronometro from "./Cronometro";
 function formatMinutes(minutes) {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
-  return `${h} h ${m} m`;
+  return `${h} h ${m} min`;
 }
 
 export default async function DashboardPage() {
@@ -45,7 +45,6 @@ export default async function DashboardPage() {
       <NavBar />
       <div className="p-8">
         <h1 className="text-2xl font-semibold">Hola, {employee.name}</h1>
-        <p className="text-zinc-600">Rol: {employee.role === "ADMIN" ? "Administrador" : "Empleado"}</p>
         <Cronometro activeEntry={activeEntry} projects={projects} />
 
         <h2 className="mt-6 text-lg font-semibold">Resumen del día</h2>
