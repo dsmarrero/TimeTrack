@@ -37,7 +37,7 @@ export default async function ProjectDetailPage({ params }) {
   }
 
   const completedEntries = project.timeEntries.filter(
-    (entry) => entry.durationMin !== null
+    (entry) => entry.durationMin > 0
   );
 
   const totalMinutes = completedEntries.reduce(

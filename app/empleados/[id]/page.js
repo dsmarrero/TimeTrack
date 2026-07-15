@@ -30,7 +30,7 @@ export default async function EmployeeDetailPage({ params }) {
   }
 
   const completedEntries = employee.timeEntries.filter(
-    (entry) => entry.durationMin !== null
+    (entry) => entry.durationMin > 0
   );
 
   const byProject = new Map();
