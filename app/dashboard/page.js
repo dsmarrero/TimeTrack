@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { getCurrentEmployee } from "@/lib/session";
-import { logout } from "@/app/logout/actions";
 import { prisma } from "@/lib/prisma";
+import NavBar from "@/components/NavBar";
 import Cronometro from "./Cronometro";
 
 function formatMinutes(minutes) {
@@ -42,37 +41,24 @@ export default async function DashboardPage() {
   const totalToday = todayEntries.reduce((sum, entry) => sum + entry.durationMin, 0);
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-semibold">Hola, {employee.name}</h1>
-      <p className="text-zinc-600">Rol: {employee.role === "ADMIN" ? "Administrador" : "Empleado"}</p>
-      <Cronometro activeEntry={activeEntry} projects={projects} />
+    <div>
+      <NavBar />
+      <div className="p-8">
+        <h1 className="text-2xl font-semibold">Hola, {employee.name}</h1>
+        <p className="text-zinc-600">Rol: {employee.role === "ADMIN" ? "Administrador" : "Empleado"}</p>
+        <Cronometro activeEntry={activeEntry} projects={projects} />
 
-      <h2 className="mt-6 text-lg font-semibold">Resumen del día</h2>
-      <ul className="mt-2 text-sm">
-        {[...byProject.entries()].map(([projectId, row]) => (
-          <li key={projectId}>
-            {row.name} — {formatMinutes(row.minutes)}
-          </li>
-        ))}
-        {byProject.size === 0 && <li>Sin tiempo registrado hoy</li>}
-      </ul>
-      <p className="mt-1 text-sm font-semibold">Total hoy: {formatMinutes(totalToday)}</p>
-
-      <h2 className="mt-6 text-lg font-semibold">Accesos rápidos</h2>
-      <nav className="mt-2 flex gap-4 text-sm underline">
-        <Link href="/proyectos">Proyectos</Link>
-        <Link href="/tiempos">Tiempos</Link>
-        <Link href="/informes">Informes</Link>
-        {employee.role === "ADMIN" && (
-          <Link href="/empleados">Empleados</Link>
-        )}
-      </nav>
-
-      <form action={logout}>
-        <button type="submit" className="mt-4 text-sm underline">
-          Cerrar sesión
-        </button>
-      </form>
+        <h2 className="mt-6 text-lg font-semibold">Resumen del día</h2>
+        <ul className="mt-2 text-sm">
+          {[...byProject.entries()].map(([projectId, row]) => (
+            <li key={projectId}>
+              {row.name} — {formatMinutes(row.minutes)}
+            </li>
+          ))}
+          {byProject.size === 0 && <li>Sin tiempo registrado hoy</li>}
+        </ul>
+        <p className="mt-1 text-sm font-semibold">Total hoy: {formatMinutes(totalToday)}</p>
+      </div>
     </div>
   );
 }

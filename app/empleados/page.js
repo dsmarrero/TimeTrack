@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getCurrentEmployee } from "@/lib/session";
+import NavBar from "@/components/NavBar";
 import EmployeeForm from "./EmployeeForm";
 
 export default async function EmployeesPage() {
@@ -14,6 +15,7 @@ export default async function EmployeesPage() {
 
   return (
     <div>
+      <NavBar />
       <h1>Empleados</h1>
       <EmployeeForm />
       <ul>

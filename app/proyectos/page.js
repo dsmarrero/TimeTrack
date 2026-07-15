@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getCurrentEmployee } from "@/lib/session";
+import NavBar from "@/components/NavBar";
 import ProjectForm from "./ProjectForm";
 
 export default async function ProjectsPage({ searchParams }) {
@@ -23,6 +24,7 @@ export default async function ProjectsPage({ searchParams }) {
 
   return (
     <div>
+      <NavBar />
       <h1>Proyectos</h1>
       {isAdmin && <ProjectForm />}
 

@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentEmployee } from "@/lib/session";
+import NavBar from "@/components/NavBar";
 import EmployeeEditForm from "./EmployeeEditForm";
 
 function formatMinutes(minutes) {
@@ -43,6 +44,7 @@ export default async function EmployeeDetailPage({ params }) {
 
   return (
     <div>
+      <NavBar />
       <h1>{employee.name}</h1>
       <EmployeeEditForm key={employee.updatedAt.toISOString()} employee={employee} />
 

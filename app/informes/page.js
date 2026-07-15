@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentEmployee } from "@/lib/session";
+import NavBar from "@/components/NavBar";
 import { getInformesData } from "./data";
 
 function formatMinutes(minutes) {
@@ -25,7 +26,9 @@ export default async function InformesPage({ searchParams }) {
   if (to) csvParams.set("to", to);
 
   return (
-    <div className="p-8">
+    <div>
+      <NavBar />
+      <div className="p-8">
       <h1 className="text-2xl font-semibold">Informes</h1>
 
       <form className="mt-4 flex flex-wrap items-end gap-2 text-sm" method="get">
@@ -89,6 +92,7 @@ export default async function InformesPage({ searchParams }) {
         </tbody>
       </table>
       {crossTable.size === 0 && <p className="mt-2 text-zinc-600">Sin entradas registradas</p>}
+      </div>
     </div>
   );
 }

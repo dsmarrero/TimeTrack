@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentEmployee } from "@/lib/session";
+import NavBar from "@/components/NavBar";
 import TimeEntryForm from "./TimeEntryForm";
 import TimeEntryRow from "./TimeEntryRow";
 
@@ -45,7 +46,9 @@ export default async function TiemposPage({ searchParams }) {
   ]);
 
   return (
-    <div className="p-8">
+    <div>
+      <NavBar />
+      <div className="p-8">
       <h1 className="text-2xl font-semibold">Histórico de tiempos</h1>
 
       <form method="GET" className="mt-4 flex flex-wrap items-end gap-2 text-sm">
@@ -109,6 +112,7 @@ export default async function TiemposPage({ searchParams }) {
         </tbody>
       </table>
       {entries.length === 0 && <p className="mt-4 text-zinc-600">Sin entradas registradas</p>}
+      </div>
     </div>
   );
 }

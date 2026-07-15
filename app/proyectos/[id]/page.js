@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentEmployee } from "@/lib/session";
+import NavBar from "@/components/NavBar";
 import ProjectEditForm from "./ProjectEditForm";
 
 function formatMinutes(minutes) {
@@ -55,6 +56,7 @@ export default async function ProjectDetailPage({ params }) {
 
   return (
     <div>
+      <NavBar />
       <h1>{project.name}</h1>
       <p>{project.description}</p>
       <p>Tiempo total: {formatMinutes(totalMinutes)}</p>
