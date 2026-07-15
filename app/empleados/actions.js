@@ -63,6 +63,10 @@ export async function updateEmployee(prevState, formData) {
     return { error: "Rol no válido" };
   }
 
+  if (id === employee.id && (role !== "ADMIN" || !active)) {
+    return { error: "No puedes quitarte a ti mismo el rol de administrador ni desactivarte" };
+  }
+
   try {
     await prisma.employee.update({
       where: { id },
