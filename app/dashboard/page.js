@@ -62,6 +62,7 @@ export default async function DashboardPage() {
       <nav className="mt-2 flex gap-4 text-sm underline">
         <Link href="/proyectos">Proyectos</Link>
         <Link href="/tiempos">Tiempos</Link>
+        <Link href="/informes">Informes</Link>
         {employee.role === "ADMIN" && (
           <Link href="/empleados">Empleados</Link>
         )}
