@@ -3,7 +3,7 @@ import { getInformesData } from "../data";
 
 function csvEscape(value) {
   const str = String(value);
-  if (/[",\n]/.test(str)) {
+  if (/[";\n]/.test(str)) {
     return `"${str.replace(/"/g, '""')}"`;
   }
   return str;
@@ -28,7 +28,7 @@ export async function GET(request) {
     rows.push(isAdmin ? [row.projectName, row.employeeName, row.minutes] : [row.projectName, row.minutes]);
   }
 
-  const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\n");
+  const csv = "﻿" + rows.map((row) => row.map(csvEscape).join(";")).join("\n");
 
   return new Response(csv, {
     headers: {
