@@ -43,7 +43,12 @@ export default async function TiemposPage() {
         </thead>
         <tbody>
           {entries.map((entry) => (
-            <TimeEntryRow key={entry.id} entry={entry} projects={projects} isAdmin={isAdmin} />
+            <TimeEntryRow
+              key={`${entry.id}-${entry.updatedAt.toISOString()}`}
+              entry={entry}
+              projects={projects}
+              isAdmin={isAdmin}
+            />
           ))}
         </tbody>
       </table>

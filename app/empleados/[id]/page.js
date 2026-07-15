@@ -44,7 +44,7 @@ export default async function EmployeeDetailPage({ params }) {
   return (
     <div>
       <h1>{employee.name}</h1>
-      <EmployeeEditForm employee={employee} />
+      <EmployeeEditForm key={employee.updatedAt.toISOString()} employee={employee} />
 
       <h2>Historial de tiempo por proyecto</h2>
       <ul>
