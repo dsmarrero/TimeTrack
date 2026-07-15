@@ -57,21 +57,23 @@ export default async function ProjectDetailPage({ params }) {
   return (
     <div>
       <NavBar />
-      <h1>{project.name}</h1>
-      <p>{project.description}</p>
-      <p>Tiempo total: {formatMinutes(totalMinutes)}</p>
+      <div className="p-8">
+        <h1 className="text-2xl font-semibold">{project.name}</h1>
+        <p className="text-zinc-600">{project.description}</p>
+        <p className="mt-1 font-semibold">Tiempo total: {formatMinutes(totalMinutes)}</p>
 
-      {isAdmin && <ProjectEditForm key={project.updatedAt.toISOString()} project={project} />}
+        {isAdmin && <ProjectEditForm key={project.updatedAt.toISOString()} project={project} />}
 
-      <h2>Desglose por empleado</h2>
-      <ul>
-        {[...byEmployee.entries()].map(([employeeId, row]) => (
-          <li key={employeeId}>
-            {row.name} — {formatMinutes(row.minutes)}
-          </li>
-        ))}
-        {byEmployee.size === 0 && <li>Sin entradas registradas</li>}
-      </ul>
+        <h2 className="mt-6 text-lg font-semibold">Desglose por empleado</h2>
+        <ul className="mt-2 text-sm">
+          {[...byEmployee.entries()].map(([employeeId, row]) => (
+            <li key={employeeId}>
+              {row.name} — {formatMinutes(row.minutes)}
+            </li>
+          ))}
+          {byEmployee.size === 0 && <li>Sin entradas registradas</li>}
+        </ul>
+      </div>
     </div>
   );
 }

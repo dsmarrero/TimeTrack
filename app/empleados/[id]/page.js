@@ -45,18 +45,20 @@ export default async function EmployeeDetailPage({ params }) {
   return (
     <div>
       <NavBar />
-      <h1>{employee.name}</h1>
-      <EmployeeEditForm key={employee.updatedAt.toISOString()} employee={employee} />
+      <div className="p-8">
+        <h1 className="text-2xl font-semibold">{employee.name}</h1>
+        <EmployeeEditForm key={employee.updatedAt.toISOString()} employee={employee} />
 
-      <h2>Historial de tiempo por proyecto</h2>
-      <ul>
-        {[...byProject.entries()].map(([projectId, row]) => (
-          <li key={projectId}>
-            {row.name} — {formatMinutes(row.minutes)}
-          </li>
-        ))}
-        {byProject.size === 0 && <li>Sin entradas registradas</li>}
-      </ul>
+        <h2 className="mt-6 text-lg font-semibold">Historial de tiempo por proyecto</h2>
+        <ul className="mt-2 text-sm">
+          {[...byProject.entries()].map(([projectId, row]) => (
+            <li key={projectId}>
+              {row.name} — {formatMinutes(row.minutes)}
+            </li>
+          ))}
+          {byProject.size === 0 && <li>Sin entradas registradas</li>}
+        </ul>
+      </div>
     </div>
   );
 }

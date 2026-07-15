@@ -16,15 +16,22 @@ export default async function EmployeesPage() {
   return (
     <div>
       <NavBar />
-      <h1>Empleados</h1>
-      <EmployeeForm />
-      <ul>
-        {employees.map((employee) => (
-          <li key={employee.id}>
-            <Link href={`/empleados/${employee.id}`}>{employee.name}</Link> — {employee.email} — {employee.role === "ADMIN" ? "Administrador" : "Empleado"} - {employee.active ? "Activo" : "Inactivo"}
-          </li>
-        ))}
-      </ul>
+      <div className="p-8">
+        <h1 className="text-2xl font-semibold">Empleados</h1>
+        <EmployeeForm />
+        <ul className="mt-6 text-sm">
+          {employees.map((employee) => (
+            <li key={employee.id}>
+              <Link href={`/empleados/${employee.id}`} className="underline">
+                {employee.name}
+              </Link>{" "}
+              — {employee.email} — {employee.role === "ADMIN" ? "Administrador" : "Empleado"} —{" "}
+              {employee.active ? "Activo" : "Inactivo"}
+            </li>
+          ))}
+          {employees.length === 0 && <li>Sin empleados registrados</li>}
+        </ul>
+      </div>
     </div>
   );
 }
