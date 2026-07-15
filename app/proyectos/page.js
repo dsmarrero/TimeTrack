@@ -15,6 +15,9 @@ export default async function ProjectsPage({ searchParams }) {
   }
   if (estado === "activo") where.active = true;
   if (estado === "inactivo") where.active = false;
+  if (!isAdmin) {
+    where.timeEntries = { some: { employeeId: currentEmployee?.id } };
+  }
 
   const projects = await prisma.project.findMany({ where });
 
