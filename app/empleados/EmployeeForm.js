@@ -10,6 +10,7 @@ export default function EmployeeForm() {
     <form action={formAction}>
       <input type="text" name="name" placeholder="Nombre" />
       <input type="email" name="email" placeholder="Email" />
+      <input type="password" name="password" placeholder="Contraseña" minLength={6} />
 
       <select name="role" defaultValue="EMPLOYEE">
         <option value="EMPLOYEE">Empleado</option>

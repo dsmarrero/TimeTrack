@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getCurrentEmployee } from "@/lib/session";
+import { adminAuth } from "@/lib/firebase-admin";
 
 export async function createEmployee(prevState, formData) {
   const employee = await getCurrentEmployee();
@@ -11,6 +12,7 @@ export async function createEmployee(prevState, formData) {
 
   const name = formData.get("name");
   const email = formData.get("email");
+  const password = formData.get("password");
   const role = formData.get("role");
 
   if (!name || name.trim().length === 0) {
@@ -22,13 +24,35 @@ export async function createEmployee(prevState, formData) {
     return { error: "Email no válido" };
   }
 
+  if (!password || password.length < 6) {
+    return { error: "La contraseña debe tener al menos 6 caracteres" };
+  }
+
   if (role !== "ADMIN" && role !== "EMPLOYEE") {
     return { error: "Rol no válido" };
   }
 
-  await prisma.employee.create({
-    data: { name, email, role },
-  });
+  let firebaseUser;
+  try {
+    firebaseUser = await adminAuth.createUser({ email, password, displayName: name });
+  } catch (err) {
+    if (err.code === "auth/email-already-exists") {
+      return { error: "Ese email ya está registrado" };
+    }
+    return { error: "No se pudo crear el usuario de acceso" };
+  }
+
+  try {
+    await prisma.employee.create({
+      data: { name, email, role },
+    });
+  } catch (err) {
+    await adminAuth.deleteUser(firebaseUser.uid);
+    if (err.code === "P2002") {
+      return { error: "Ese email ya está en uso" };
+    }
+    throw err;
+  }
 
   revalidatePath("/empleados");
   return { error: null };
@@ -67,6 +91,11 @@ export async function updateEmployee(prevState, formData) {
     return { error: "No puedes quitarte a ti mismo el rol de administrador ni desactivarte" };
   }
 
+  const existing = await prisma.employee.findUnique({ where: { id } });
+  if (!existing) {
+    return { error: "Empleado no encontrado" };
+  }
+
   try {
     await prisma.employee.update({
       where: { id },
@@ -80,6 +109,13 @@ export async function updateEmployee(prevState, formData) {
       return { error: "Empleado no encontrado" };
     }
     throw err;
+  }
+
+  try {
+    const firebaseUser = await adminAuth.getUserByEmail(existing.email);
+    await adminAuth.updateUser(firebaseUser.uid, { email, disabled: !active });
+  } catch {
+    // no bloquea la edición si el usuario de Firebase no existe o ya no coincide
   }
 
   revalidatePath("/empleados");
