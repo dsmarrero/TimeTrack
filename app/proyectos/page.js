@@ -25,26 +25,38 @@ export default async function ProjectsPage({ searchParams }) {
   return (
     <div>
       <NavBar />
-      <h1>Proyectos</h1>
-      {isAdmin && <ProjectForm />}
+      <div className="p-8">
+        <h1 className="text-2xl font-semibold">Proyectos</h1>
+        {isAdmin && <ProjectForm />}
 
-      <form method="GET">
-        <input type="text" name="q" placeholder="Buscar proyecto..." defaultValue={q} />
-        <select name="estado" defaultValue={estado}>
-          <option value="todos">Todos</option>
-          <option value="activo">Activos</option>
-          <option value="inactivo">Inactivos</option>
-        </select>
-        <button type="submit">Filtrar</button>
-      </form>
+        <form method="GET" className="mt-4 flex flex-wrap items-end gap-2 text-sm">
+          <label className="flex flex-col">
+            Buscar
+            <input type="text" name="q" placeholder="Buscar proyecto..." defaultValue={q} />
+          </label>
+          <label className="flex flex-col">
+            Estado
+            <select name="estado" defaultValue={estado}>
+              <option value="todos">Todos</option>
+              <option value="activo">Activos</option>
+              <option value="inactivo">Inactivos</option>
+            </select>
+          </label>
+          <button type="submit">Filtrar</button>
+        </form>
 
-      <ul>
-        {projects.map((project) => (
-          <li key={project.id}>
-            <Link href={`/proyectos/${project.id}`}>{project.name}</Link> - {project.description} - {project.active ? "Activo" : "Inactivo"}
-          </li>
-        ))}
-      </ul>
+        <ul className="mt-6 text-sm">
+          {projects.map((project) => (
+            <li key={project.id}>
+              <Link href={`/proyectos/${project.id}`} className="underline">
+                {project.name}
+              </Link>{" "}
+              — {project.description} — {project.active ? "Activo" : "Inactivo"}
+            </li>
+          ))}
+          {projects.length === 0 && <li>Sin proyectos registrados</li>}
+        </ul>
+      </div>
     </div>
   );
 }
