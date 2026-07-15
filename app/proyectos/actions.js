@@ -17,7 +17,7 @@ export async function createProject(prevState, formData) {
   }
 
   await prisma.project.create({
-    data: { name, description, }
+    data: { name, description },
   });
 
   revalidatePath("/proyectos");
