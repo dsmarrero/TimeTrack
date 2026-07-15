@@ -19,6 +19,21 @@
   }
 }
 
+.viz-root {
+  --chart-grid: #e1e0d9;
+  --chart-axis: #c3c2b7;
+  --chart-muted: #898781;
+  --chart-series-1: #2a78d6;
+}
+@media (prefers-color-scheme: dark) {
+  .viz-root {
+    --chart-grid: #2c2c2a;
+    --chart-axis: #383835;
+    --chart-muted: #898781;
+    --chart-series-1: #3987e5;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

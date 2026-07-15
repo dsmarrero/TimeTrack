@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentEmployee } from "@/lib/session";
 import NavBar from "@/components/NavBar";
+import ProjectTimeChart from "@/components/ProjectTimeChart";
 import { getInformesData } from "./data";
 
 function formatMinutes(minutes) {
@@ -57,6 +58,10 @@ export default async function InformesPage({ searchParams }) {
         ))}
         {byProject.size === 0 && <li>Sin datos</li>}
       </ul>
+
+      <ProjectTimeChart
+        data={[...byProject.entries()].map(([id, row]) => ({ id, name: row.name, minutes: row.minutes }))}
+      />
 
       {isAdmin && (
         <>

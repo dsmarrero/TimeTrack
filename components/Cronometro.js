@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState, useEffect, useState } from "react";
-import { startTimer, stopTimer } from "./actions";
+import { startTimer, stopTimer } from "../app/dashboard/actions";
 
 function formatElapsed(ms) {
   const totalSeconds = Math.max(0, Math.floor(ms / 1000));
