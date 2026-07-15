@@ -19,7 +19,7 @@ export default async function EmployeesPage() {
       <ul>
         {employees.map((employee) => (
           <li key={employee.id}>
-            <Link href={`/empleados/${employee.id}`}>{employee.name}</Link> — {employee.email} — {employee.role} - {employee.active}
+            <Link href={`/empleados/${employee.id}`}>{employee.name}</Link> — {employee.email} — {employee.role === "ADMIN" ? "Administrador" : "Empleado"} - {employee.active ? "Activo" : "Inactivo"}
           </li>
         ))}
       </ul>

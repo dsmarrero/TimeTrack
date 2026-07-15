@@ -1,40 +1,40 @@
 @AGENTS.md
-Monitor prácticas empresa. Yo alumno bootcamp full-stack ironhack. Guía esto:
+Monitor prï¿½cticas empresa. Yo alumno bootcamp full-stack ironhack. Guï¿½a esto:
 
-# Especificación de Proyecto: TimeTrack
+# Especificaciï¿½n de Proyecto: TimeTrack
 
 Sistema seguimiento tiempo por proyecto y empleado.
 
 ## 1. Objetivo del Proyecto
 
-Desarrollar app web: gestiona proyectos y empleados, registra tiempo dedicado vía cronómetro.
+Desarrollar app web: gestiona proyectos y empleados, registra tiempo dedicado vï¿½a cronï¿½metro.
 
 **Alcance funcional principal:**
 
-* Alta, edición, baja (lógica) proyectos.
-* Alta, edición, baja (lógica) empleados.
-* Selector proyecto activo + cronómetro (iniciar/detener).
-* Registro histórico sesiones tiempo (editable manual).
+* Alta, ediciï¿½n, baja (lï¿½gica) proyectos.
+* Alta, ediciï¿½n, baja (lï¿½gica) empleados.
+* Selector proyecto activo + cronï¿½metro (iniciar/detener).
+* Registro histï¿½rico sesiones tiempo (editable manual).
 * Listado y filtros tiempo: por proyecto, por empleado, por rango fechas.
-* Autenticación usuarios + control acceso por roles (admin/empleado).
+* Autenticaciï¿½n usuarios + control acceso por roles (admin/empleado).
 
-## 2. Stack Tecnológico
+## 2. Stack Tecnolï¿½gico
 
-| Capa | Tecnología |
+| Capa | Tecnologï¿½a |
 | --- | --- |
 | Framework | Next.js 14+ (App Router) |
 | Lenguaje | TypeScript |
 | ORM | Prisma |
 | Base de datos | PostgreSQL |
 | Estilos | Tailwind CSS |
-| Autenticación | **FIREBASE** |
-| Validación | **NO** |
+| Autenticaciï¿½n | **FIREBASE** |
+| Validaciï¿½n | **NO** |
 | Estado en cliente | React Query / Server Actions |
 | Despliegue sugerido | **NO** |
 
 *Notas adicionales:*
 
-* *Anotación manual: "No GITHUB"*
+* *Anotaciï¿½n manual: "No GITHUB"*
 
 ## 3. Modelo de Datos (Prisma)
 
@@ -84,63 +84,63 @@ enum Role {
 
 ```
 
-*Nota: `endedAt` nulo = cronómetro activo. `durationMin` calcula al cerrar entrada.*
+*Nota: `endedAt` nulo = cronï¿½metro activo. `durationMin` calcula al cerrar entrada.*
 
 ## 4. Funcionalidades Detalladas
 
-### 4.1 Gestión de proyectos
+### 4.1 Gestiï¿½n de proyectos
 
-* CRUD proyectos (nombre, descripción, estado activo/inactivo).
+* CRUD proyectos (nombre, descripciï¿½n, estado activo/inactivo).
 * Listado con buscador + filtro por estado.
 * Vista detalle: tiempo total acumulado + desglose por empleado.
 
-### 4.2 Gestión de empleados
+### 4.2 Gestiï¿½n de empleados
 
 * CRUD empleados (nombre, email, rol, estado activo/inactivo).
 * Solo admin crea, edita, desactiva empleados.
 * Vista detalle: historial tiempo por proyecto.
 
-### 4.3 Cronómetro de tiempo
+### 4.3 Cronï¿½metro de tiempo
 
-* Selección proyecto activo.
-* Botón **Iniciar**: crea entrada, `startedAt = ahora`, `endedAt = null`.
-* Botón **Detener**: actualiza `endedAt`, calcula duración.
-* Validación: no iniciar nuevo si ya hay uno activo (servidor).
+* Selecciï¿½n proyecto activo.
+* Botï¿½n **Iniciar**: crea entrada, `startedAt = ahora`, `endedAt = null`.
+* Botï¿½n **Detener**: actualiza `endedAt`, calcula duraciï¿½n.
+* Validaciï¿½n: no iniciar nuevo si ya hay uno activo (servidor).
 * Persiste estado si se cierra navegador.
 
-### 4.4 Edición del histórico
+### 4.4 Ediciï¿½n del histï¿½rico
 
 * Listado entradas editable (fecha/hora inicio/fin, proyecto, nota).
-* Creación entradas manuales.
-* Confirmación antes de eliminar.
+* Creaciï¿½n entradas manuales.
+* Confirmaciï¿½n antes de eliminar.
 
 ### 4.5 Informes
 
 * Tiempo total por proyecto y por empleado (rango fechas).
 * Tabla cruzada proyecto x empleado.
-* Exportación a CSV.
+* Exportaciï¿½n a CSV.
 
-## 5. Autenticación y Roles
+## 5. Autenticaciï¿½n y Roles
 
 | Rol | Permisos |
 | --- | --- |
-| Administrador | Acceso total: gestión proyectos, empleados, edición cualquier entrada, ve todos informes. |
-| Empleado | Solo inicia/detiene su propio cronómetro, edita sus propias entradas, ve sus propios informes. |
+| Administrador | Acceso total: gestiï¿½n proyectos, empleados, ediciï¿½n cualquier entrada, ve todos informes. |
+| Empleado | Solo inicia/detiene su propio cronï¿½metro, edita sus propias entradas, ve sus propios informes. |
 
-*Toda mutación servidor valida sesión y rol.*
+*Toda mutaciï¿½n servidor valida sesiï¿½n y rol.*
 
 ## 6. Estructura de Pantallas Sugerida
 
 * `/login`
-* `/dashboard` (cronómetro, accesos rápidos, resumen del día)
+* `/dashboard` (cronï¿½metro, accesos rï¿½pidos, resumen del dï¿½a)
 * `/proyectos` (listado)
 * `/proyectos/[id]` (detalle y tiempo acumulado)
 * `/empleados` (listado - solo admin)
 * `/empleados/[id]` (detalle e historial)
-* `/tiempos` (histórico editable)
+* `/tiempos` (histï¿½rico editable)
 * `/informes` (agregados y filtros)
 
-## 7. Buenas Prácticas
+## 7. Buenas Prï¿½cticas
 
 * Arquitectura por capas.
 * Manejo errores consistente.
@@ -151,14 +151,17 @@ enum Role {
 
 ## 8. Entregables
 
-* README (instalación, variables, comandos Prisma).
+* README (instalaciï¿½n, variables, comandos Prisma).
 * Script seed (datos ejemplo).
 * App desplegada.
 
 ## 9. Extras Opcionales
 
-* Gráficas tiempo (ej. Recharts).
-* Notificación si cronómetro lleva activo demasiado tiempo.
+* Grï¿½ficas tiempo (ej. Recharts).
+* Notificaciï¿½n si cronï¿½metro lleva activo demasiado tiempo.
 * Modo oscuro.
-* Exportación informes a PDF.
-* Registro auditoría de cambios.
+* Exportaciï¿½n informes a PDF.
+* Registro auditorï¿½a de cambios.
+
+Nunca nombrar claude como coautor o colaborador
+explicar todos los pasos como si fuese niÃ±o de 10 aÃ±os
