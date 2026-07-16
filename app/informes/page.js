@@ -49,6 +49,9 @@ export default async function InformesPage({ searchParams }) {
         <a href={`/informes/csv?${csvParams.toString()}`} className="underline">
           Exportar CSV
         </a>
+        <a href={`/informes/pdf?${csvParams.toString()}`} className="underline">
+          Exportar PDF
+        </a>
       </form>
 
       <p className="mt-4 font-semibold">Total: {formatMinutes(totalMinutes)}</p>
