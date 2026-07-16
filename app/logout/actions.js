@@ -14,7 +14,7 @@ export async function logout() {
       const decodedToken = await adminAuth.verifySessionCookie(sessionCookie);
       await adminAuth.revokeRefreshTokens(decodedToken.sub);
     } catch {
-      // Sesión ya inválida/expirada: nada que revocar, seguimos y limpiamos la cookie igual.
+      // Sesión ya inválida/expirada: nada que revocar, se limpia la cookie.
     }
   }
 

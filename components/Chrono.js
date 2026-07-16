@@ -36,7 +36,7 @@ export default function Chrono ({ activeEntry, projects }) {
         <p className="text-3xl font-mono">{formatElapsed(elapsed)}</p>
         {tooMuchTime && (
           <p className="text-red-600 font-semibold">
-          El cronómetro lleva activo {timeLimit / 3600000} horas.
+          El cronómetro lleva activo 8 horas.
           </p>
         )}
         <form action={stopAction}>
