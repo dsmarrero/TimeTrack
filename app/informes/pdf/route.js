@@ -36,7 +36,7 @@ export async function GET(request) {
   const bufferPromise = streamToBuffer(doc);
 
   doc.fontSize(18).text("Informe de tiempos", { align: "left" });
-  doc.fontSize(16).text(employee.name);
+  doc.fontSize(16).text(employee.name, { align: "right" });
   if (from || to) {
     doc.fontSize(10).fillColor("#555").text(`Rango: ${from || "inicio"} - ${to || "hoy"}`);
   }
