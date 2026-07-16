@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getCurrentEmployee } from "@/lib/session";
 import NavBar from "@/components/NavBar";
@@ -85,6 +86,9 @@ export default async function TiemposPage({ searchParams }) {
           <input type="date" name="to" defaultValue={to} />
         </label>
         <button type="submit">Filtrar</button>
+        <Link href="/tiempos" className="underline">
+          Borrar filtro
+        </Link>
       </form>
 
       <TimeEntryForm projects={projects} />

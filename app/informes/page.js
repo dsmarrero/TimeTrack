@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { getCurrentEmployee } from "@/lib/session";
 import NavBar from "@/components/NavBar";
 import ProjectTimeChart from "@/components/ProjectTimeChart";
@@ -42,6 +43,9 @@ export default async function InformesPage({ searchParams }) {
           <input type="date" name="to" defaultValue={to ?? ""} />
         </label>
         <button type="submit">Filtrar</button>
+        <Link href="/informes" className="underline">
+          Borrar filtro
+        </Link>
         <a href={`/informes/csv?${csvParams.toString()}`} className="underline">
           Exportar CSV
         </a>

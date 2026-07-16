@@ -43,6 +43,9 @@ export default async function ProjectsPage({ searchParams }) {
             </select>
           </label>
           <button type="submit">Filtrar</button>
+          <Link href="/proyectos" className="underline">
+            Borrar filtro
+          </Link>
         </form>
 
         <ul className="mt-6 text-sm">
