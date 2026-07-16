@@ -5,7 +5,7 @@ import { adminAuth } from "@/lib/firebase-admin";
 import { SESSION_COOKIE_NAME } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 
-const SESSION_EXPIRES_IN_MS = 5 * 24 * 60 * 60 * 1000; // 5 días
+const SESSION_EXPIRES_IN_MS = 30 * 60 * 1000; // 30 min
 
 export async function login(idToken) {
   let decodedToken;
