@@ -3,7 +3,8 @@
 import { useActionState, useEffect, useState } from "react";
 import { startTimer, stopTimer } from "../app/dashboard/actions";
 
-const timeLimit = 8 * 60 * 60 * 1000; // 8 horas en milisegundos
+// const timeLimit = 8 * 60 * 60 * 1000; // 8 horas
+const timeLimit = 10 * 1000 // 10 s
 
 function formatElapsed(ms) {
   const totalSeconds = Math.max(0, Math.floor(ms / 1000));
@@ -13,11 +14,11 @@ function formatElapsed(ms) {
   return `${h}:${m}:${s}`;
 }
 
-export default function Cronometro({ activeEntry, projects }) {
+export default function Chrono ({ activeEntry, projects }) {
   const [startState, startAction, startPending] = useActionState(startTimer, { error: null });
   const [stopState, stopAction, stopPending] = useActionState(stopTimer, { error: null });
   const [elapsed, setElapsed] = useState(0);
-  const demasiadoTiempo = elapsed > timeLimit;
+  const tooMuchTime = elapsed > timeLimit;
 
   useEffect(() => {
     if (!activeEntry) return;
@@ -33,9 +34,9 @@ export default function Cronometro({ activeEntry, projects }) {
       <div className="mt-4">
         <p>Proyecto activo: {activeEntry.project.name}</p>
         <p className="text-3xl font-mono">{formatElapsed(elapsed)}</p>
-        {demasiadoTiempo && (
+        {tooMuchTime && (
           <p className="text-red-600 font-semibold">
-            ⚠ Llevas más de 8 horas seguidas. Considera parar el cronómetro.
+          El cronómetro lleva activo {timeLimit / 3600000} horas.
           </p>
         )}
         <form action={stopAction}>

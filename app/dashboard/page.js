@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getCurrentEmployee } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import NavBar from "@/components/NavBar";
-import Cronometro from "@/components/Cronometro";
+import Cronometro from "@/components/Chrono";
 
 function formatMinutes(minutes) {
   const h = Math.floor(minutes / 60);
