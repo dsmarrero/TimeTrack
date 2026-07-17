@@ -11,9 +11,10 @@ function formatElapsed(ms) {
 }
 
 export default function ActiveEmployees({ entries }) {
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState(null);
 
   useEffect(() => {
+    setNow(Date.now());
     if (entries.length === 0) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
@@ -38,7 +39,9 @@ export default function ActiveEmployees({ entries }) {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-live" />
               </span>
-              <span className="font-mono text-live">{formatElapsed(now - startedAt)}</span>
+              <span className="font-mono text-live">
+                {now === null ? "--:--:--" : formatElapsed(now - startedAt)}
+              </span>
             </div>
           </li>
         );

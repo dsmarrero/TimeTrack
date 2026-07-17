@@ -53,7 +53,14 @@ export default async function TiemposPage({ searchParams }) {
     <div>
       <NavBar />
       <div className="mx-auto max-w-5xl p-8">
-        <h1 className="text-2xl font-semibold text-foreground">Histórico de tiempos</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold text-foreground">Histórico de tiempos</h1>
+          {isAdmin && (
+            <Link href="/tiempos/auditoria" className="text-sm font-medium text-brand hover:underline">
+              Ver auditoría
+            </Link>
+          )}
+        </div>
 
         <form method="GET" className="mt-4 flex flex-wrap items-end gap-3 text-sm">
           <label className="flex flex-col gap-1 text-foreground/70">

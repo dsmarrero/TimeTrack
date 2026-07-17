@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getCurrentEmployee } from "@/lib/session";
+import { logAudit } from "@/lib/audit";
 
 function parseDate(value) {
   const date = new Date(value);
@@ -31,15 +32,24 @@ export async function createTimeEntry(prevState, formData) {
 
   const durationMin = Math.round((endedAt - startedAt) / 60000);
 
-  await prisma.timeEntry.create({
-    data: {
-      employeeId: employee.id,
-      projectId,
-      startedAt,
-      endedAt,
-      durationMin,
-      note: note || null,
-    },
+  await prisma.$transaction(async (tx) => {
+    const created = await tx.timeEntry.create({
+      data: {
+        employeeId: employee.id,
+        projectId,
+        startedAt,
+        endedAt,
+        durationMin,
+        note: note || null,
+      },
+    });
+    await logAudit(tx, {
+      timeEntryId: created.id,
+      action: "CREATE",
+      changedBy: employee.id,
+      before: null,
+      after: created,
+    });
   });
 
   revalidatePath("/tiempos");
@@ -78,9 +88,18 @@ export async function updateTimeEntry(prevState, formData) {
 
   const durationMin = Math.round((endedAt - startedAt) / 60000);
 
-  await prisma.timeEntry.update({
-    where: { id },
-    data: { projectId, startedAt, endedAt, durationMin, note: note || null },
+  await prisma.$transaction(async (tx) => {
+    const updated = await tx.timeEntry.update({
+      where: { id },
+      data: { projectId, startedAt, endedAt, durationMin, note: note || null },
+    });
+    await logAudit(tx, {
+      timeEntryId: id,
+      action: "UPDATE",
+      changedBy: employee.id,
+      before: entry,
+      after: updated,
+    });
   });
 
   revalidatePath("/tiempos");
@@ -102,7 +121,16 @@ export async function deleteTimeEntry(prevState, formData) {
     return { error: "No autorizado" };
   }
 
-  await prisma.timeEntry.delete({ where: { id } });
+  await prisma.$transaction(async (tx) => {
+    await tx.timeEntry.delete({ where: { id } });
+    await logAudit(tx, {
+      timeEntryId: id,
+      action: "DELETE",
+      changedBy: employee.id,
+      before: entry,
+      after: null,
+    });
+  });
 
   revalidatePath("/tiempos");
   return { error: null };

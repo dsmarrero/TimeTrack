@@ -34,6 +34,26 @@
   }
 }
 
+:root[data-theme="light"] {
+  --background: #F7F5F0;
+  --foreground: #1C2321;
+  --brand: #0F4C3A;
+  --brand-hover: #0B3A2C;
+  --live: #D97706;
+  --danger: #B91C1C;
+  --border: #DEDACE;
+}
+
+:root[data-theme="dark"] {
+  --background: #14171a;
+  --foreground: #ECEAE4;
+  --brand: #2E9E77;
+  --brand-hover: #3FBB8D;
+  --live: #F0A93E;
+  --danger: #F16060;
+  --border: #2A2E31;
+}
+
 .viz-root {
   --chart-grid: #e1e0d9;
   --chart-axis: #c3c2b7;
@@ -47,6 +67,18 @@
     --chart-muted: #898781;
     --chart-series-1: #2e9e77;
   }
+}
+:root[data-theme="light"] .viz-root {
+  --chart-grid: #e1e0d9;
+  --chart-axis: #c3c2b7;
+  --chart-muted: #898781;
+  --chart-series-1: #0f4c3a;
+}
+:root[data-theme="dark"] .viz-root {
+  --chart-grid: #2c2c2a;
+  --chart-axis: #383835;
+  --chart-muted: #898781;
+  --chart-series-1: #2e9e77;
 }
 
 body {

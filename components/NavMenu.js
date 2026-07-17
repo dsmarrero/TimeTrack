@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import BackButton from "./BackButton";
+import ThemeToggle from "./ThemeToggle";
 
 const baseLinks = [
   { href: "/dashboard", label: "Dashboard" },
@@ -53,11 +54,14 @@ export default function NavMenu({ isAdmin, employeeName, employeeRoleLabel, logo
             {employeeName}{" "}
             <span className="text-foreground/40">({employeeRoleLabel})</span>
           </span>
-          <form action={logoutAction}>
-            <button type="submit" className="font-medium text-danger hover:underline">
-              Cerrar sesión
-            </button>
-          </form>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <form action={logoutAction}>
+              <button type="submit" className="font-medium text-danger hover:underline">
+                Cerrar sesión
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>

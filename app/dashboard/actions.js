@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getCurrentEmployee } from "@/lib/session";
+import { logAudit } from "@/lib/audit";
 
 export async function startTimer(prevState, formData) {
   const employee = await getCurrentEmployee();
@@ -21,12 +22,21 @@ export async function startTimer(prevState, formData) {
     return { error: "Ya tienes un cronómetro activo" };
   }
 
-  await prisma.timeEntry.create({
-    data: {
-      employeeId: employee.id,
-      projectId,
-      startedAt: new Date(),
-    },
+  await prisma.$transaction(async (tx) => {
+    const created = await tx.timeEntry.create({
+      data: {
+        employeeId: employee.id,
+        projectId,
+        startedAt: new Date(),
+      },
+    });
+    await logAudit(tx, {
+      timeEntryId: created.id,
+      action: "CREATE",
+      changedBy: employee.id,
+      before: null,
+      after: created,
+    });
   });
 
   revalidatePath("/dashboard");
@@ -52,9 +62,18 @@ export async function stopTimer(prevState, formData) {
   const endedAt = new Date();
   const durationMin = Math.round((endedAt - entry.startedAt) / 60000);
 
-  await prisma.timeEntry.update({
-    where: { id: entryId },
-    data: { endedAt, durationMin },
+  await prisma.$transaction(async (tx) => {
+    const updated = await tx.timeEntry.update({
+      where: { id: entryId },
+      data: { endedAt, durationMin },
+    });
+    await logAudit(tx, {
+      timeEntryId: entryId,
+      action: "UPDATE",
+      changedBy: employee.id,
+      before: entry,
+      after: updated,
+    });
   });
 
   revalidatePath("/dashboard");

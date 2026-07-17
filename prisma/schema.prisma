@@ -45,6 +45,18 @@ model TimeEntry{
   @@index ([projectId])
 }
 
+model AuditLog{
+  id  String  @id @default(cuid())
+  timeEntryId String
+  action  String
+  changedBy String
+  before  Json?
+  after Json?
+  createdAt DateTime  @default(now())
+
+  @@index ([timeEntryId])
+}
+
 enum Role{
   ADMIN
   EMPLOYEE
