@@ -5,6 +5,7 @@ export async function getInformesData(employee, { from, to }) {
 
   const where = {
     durationMin: { gt: 0 },
+    status: "APPROVED",
     ...(isAdmin ? {} : { employeeId: employee.id }),
   };
 

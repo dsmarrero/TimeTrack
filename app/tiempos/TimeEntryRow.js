@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { updateTimeEntry, deleteTimeEntry } from "./actions";
+import { updateTimeEntry, deleteTimeEntry, approveTimeEntry, rejectTimeEntry } from "./actions";
 
 function toLocalInput(date) {
   const d = new Date(date);
@@ -10,10 +10,17 @@ function toLocalInput(date) {
   return d.toISOString().slice(0, 16);
 }
 
+const statusLabels = {
+  PENDING: { text: "Pendiente", className: "bg-amber-500/15 text-amber-600" },
+  REJECTED: { text: "Rechazada", className: "bg-danger/15 text-danger" },
+};
+
 export default function TimeEntryRow({ entry, projects, isAdmin }) {
   const [editing, setEditing] = useState(false);
   const [updateState, updateAction, updatePending] = useActionState(updateTimeEntry, { error: null });
   const [deleteState, deleteAction, deletePending] = useActionState(deleteTimeEntry, { error: null });
+  const [approveState, approveAction, approvePending] = useActionState(approveTimeEntry, { error: null });
+  const [rejectState, rejectAction, rejectPending] = useActionState(rejectTimeEntry, { error: null });
   const router = useRouter();
   const wasUpdatePending = useRef(false);
 
@@ -89,7 +96,14 @@ export default function TimeEntryRow({ entry, projects, isAdmin }) {
     <tr className="block rounded-lg border border-border p-4 text-foreground/80 md:table-row md:rounded-none md:border-0 md:p-0">
       <td className="flex items-center justify-between py-1 md:table-cell md:px-4 md:py-3">
         <span className={mobileLabelClass}>Proyecto</span>
-        <span>{entry.project.name}</span>
+        <span className="flex items-center gap-2">
+          {entry.project.name}
+          {statusLabels[entry.status] && (
+            <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusLabels[entry.status].className}`}>
+              {statusLabels[entry.status].text}
+            </span>
+          )}
+        </span>
       </td>
       {isAdmin && (
         <td className="flex items-center justify-between py-1 md:table-cell md:px-4 md:py-3">
@@ -115,6 +129,30 @@ export default function TimeEntryRow({ entry, projects, isAdmin }) {
       </td>
       <td className="pt-2 md:table-cell md:px-4 md:py-3">
         <div className="flex items-center justify-end gap-3 md:justify-start">
+          {isAdmin && entry.status === "PENDING" && (
+            <>
+              <form action={approveAction}>
+                <input type="hidden" name="id" value={entry.id} />
+                <button
+                  type="submit"
+                  disabled={approvePending}
+                  className="font-medium text-brand hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Aprobar
+                </button>
+              </form>
+              <form action={rejectAction}>
+                <input type="hidden" name="id" value={entry.id} />
+                <button
+                  type="submit"
+                  disabled={rejectPending}
+                  className="font-medium text-danger hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Rechazar
+                </button>
+              </form>
+            </>
+          )}
           <button
             type="button"
             onClick={() => setEditing(true)}
@@ -140,7 +178,11 @@ export default function TimeEntryRow({ entry, projects, isAdmin }) {
             </button>
           </form>
         </div>
-        {deleteState.error && <p className="mt-1 text-right text-sm text-danger md:text-left">{deleteState.error}</p>}
+        {(deleteState.error || approveState.error || rejectState.error) && (
+          <p className="mt-1 text-right text-sm text-danger md:text-left">
+            {deleteState.error || approveState.error || rejectState.error}
+          </p>
+        )}
       </td>
     </tr>
   );

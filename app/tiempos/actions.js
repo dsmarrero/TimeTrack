@@ -41,6 +41,7 @@ export async function createTimeEntry(prevState, formData) {
         endedAt,
         durationMin,
         note: note || null,
+        status: employee.role === "ADMIN" ? "APPROVED" : "PENDING",
       },
     });
     await logAudit(tx, {
@@ -49,6 +50,60 @@ export async function createTimeEntry(prevState, formData) {
       changedBy: employee.id,
       before: null,
       after: created,
+    });
+  });
+
+  revalidatePath("/tiempos");
+  return { error: null };
+}
+
+export async function approveTimeEntry(prevState, formData) {
+  const employee = await getCurrentEmployee();
+  if (!employee || employee.role !== "ADMIN") {
+    return { error: "No autorizado" };
+  }
+
+  const id = formData.get("id");
+  const entry = await prisma.timeEntry.findUnique({ where: { id } });
+  if (!entry) {
+    return { error: "Entrada no encontrada" };
+  }
+
+  await prisma.$transaction(async (tx) => {
+    const updated = await tx.timeEntry.update({ where: { id }, data: { status: "APPROVED" } });
+    await logAudit(tx, {
+      timeEntryId: id,
+      action: "APPROVE",
+      changedBy: employee.id,
+      before: entry,
+      after: updated,
+    });
+  });
+
+  revalidatePath("/tiempos");
+  return { error: null };
+}
+
+export async function rejectTimeEntry(prevState, formData) {
+  const employee = await getCurrentEmployee();
+  if (!employee || employee.role !== "ADMIN") {
+    return { error: "No autorizado" };
+  }
+
+  const id = formData.get("id");
+  const entry = await prisma.timeEntry.findUnique({ where: { id } });
+  if (!entry) {
+    return { error: "Entrada no encontrada" };
+  }
+
+  await prisma.$transaction(async (tx) => {
+    const updated = await tx.timeEntry.update({ where: { id }, data: { status: "REJECTED" } });
+    await logAudit(tx, {
+      timeEntryId: id,
+      action: "REJECT",
+      changedBy: employee.id,
+      before: entry,
+      after: updated,
     });
   });
 
