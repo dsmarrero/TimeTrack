@@ -1,11 +1,12 @@
 'use client'
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { updateEmployee } from "../actions";
+import { updateEmployee, deleteEmployee } from "../actions";
 
 export default function EmployeeEditForm({ employee }) {
   const [state, formAction, isPending] = useActionState(updateEmployee, { error: null });
+  const [isDeleting, startTransition] = useTransition();
   const router = useRouter();
   const wasPending = useRef(false);
 
@@ -31,23 +32,28 @@ export default function EmployeeEditForm({ employee }) {
         <option value="ADMIN">Administrador</option>
       </select>
 
-      <label className="flex items-center gap-2 pb-2 text-sm text-foreground/70">
-        <input
-          type="checkbox"
-          name="active"
-          defaultChecked={employee.active}
-          className="h-4 w-4 rounded border-border text-brand focus:ring-brand/30"
-        />
-        Activo
-      </label>
+      <div className="flex w-full items-center justify-between gap-3 mt-2">
+        
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2 text-sm text-foreground/70 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              name="active"
+              defaultChecked={employee.active}
+              className="h-4 w-4 rounded border-border text-brand focus:ring-brand/30"
+            />
+            Activo
+          </label>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {isPending ? "Guardando..." : "Guardar cambios"}
-      </button>
+          <button
+            type="submit"
+            disabled={isPending || isDeleting}
+            className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isPending ? "Guardando..." : "Guardar cambios"}
+          </button>
+        </div>
+      </div>
 
       {state.error && <p className="w-full text-sm text-danger">{state.error}</p>}
     </form>

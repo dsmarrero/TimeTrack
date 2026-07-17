@@ -115,10 +115,47 @@ export async function updateEmployee(prevState, formData) {
     const firebaseUser = await adminAuth.getUserByEmail(existing.email);
     await adminAuth.updateUser(firebaseUser.uid, { email, disabled: !active });
   } catch {
-    // no bloquea la edición si el usuario de Firebase no existe o ya no coincide
   }
 
   revalidatePath("/empleados");
   revalidatePath(`/empleados/${id}`);
+  return { error: null };
+}
+
+export async function deleteEmployee(id) {
+  const employee = await getCurrentEmployee();
+  
+  if (!employee || employee.role !== "ADMIN") {
+    return { error: "No autorizado" };
+  }
+
+  if (id === employee.id) {
+    return { error: "No puedes eliminar tu propia cuenta" };
+  }
+
+  const existing = await prisma.employee.findUnique({ where: { id } });
+  if (!existing) {
+    return { error: "Empleado no encontrado" };
+  }
+
+  try {
+    const firebaseUser = await adminAuth.getUserByEmail(existing.email);
+    await adminAuth.deleteUser(firebaseUser.uid);
+  } catch (err) {
+    console.warn("Usuario no encontrado en Firebase, procediendo con la BD:", err);
+  }
+
+  try {
+    await prisma.employee.delete({
+      where: { id },
+    });
+  } catch (err) {
+    if (err.code === "P2025") {
+      return { error: "Empleado no encontrado en la base de datos" };
+    }
+    throw err;
+  }
+
+  revalidatePath("/empleados");
   return { error: null };
 }
