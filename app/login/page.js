@@ -43,7 +43,7 @@ export default function LoginPage() {
         className="w-full max-w-sm rounded-xl border border-border bg-background p-8 shadow-sm"
       >
         <h1 className="mb-1 text-2xl font-semibold text-foreground">TimeTrack</h1>
-        <p className="mb-6 text-sm text-foreground/60">Inicia sesión para fichar tu tiempo</p>
+        <p className="mb-6 text-sm text-foreground/60">Inicia sesión para registrar tu tiempo</p>
 
         <div className="space-y-4">
           <input
