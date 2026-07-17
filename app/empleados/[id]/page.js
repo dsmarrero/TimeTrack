@@ -45,19 +45,27 @@ export default async function EmployeeDetailPage({ params }) {
   return (
     <div>
       <NavBar />
-      <div className="p-8">
-        <h1 className="text-2xl font-semibold">{employee.name}</h1>
-        <EmployeeEditForm key={employee.updatedAt.toISOString()} employee={employee} />
+      <div className="mx-auto max-w-3xl p-8">
+        <h1 className="text-2xl font-semibold text-foreground">{employee.name}</h1>
 
-        <h2 className="mt-6 text-lg font-semibold">Historial de tiempo por proyecto</h2>
-        <ul className="mt-2 text-sm">
-          {[...byProject.entries()].map(([projectId, row]) => (
-            <li key={projectId}>
-              {row.name} — {formatMinutes(row.minutes)}
-            </li>
-          ))}
-          {byProject.size === 0 && <li>Sin entradas registradas</li>}
-        </ul>
+        <div className="mt-4 rounded-xl border border-border p-6">
+          <EmployeeEditForm key={employee.updatedAt.toISOString()} employee={employee} />
+        </div>
+
+        <div className="mt-6 rounded-xl border border-border p-6">
+          <h2 className="text-lg font-semibold text-foreground">Historial de tiempo por proyecto</h2>
+          <ul className="mt-3 divide-y divide-border text-sm">
+            {[...byProject.entries()].map(([projectId, row]) => (
+              <li key={projectId} className="flex items-center justify-between py-2">
+                <span className="text-foreground/80">{row.name}</span>
+                <span className="font-mono text-foreground/60">{formatMinutes(row.minutes)}</span>
+              </li>
+            ))}
+            {byProject.size === 0 && (
+              <li className="py-2 text-foreground/50">Sin entradas registradas</li>
+            )}
+          </ul>
+        </div>
       </div>
     </div>
   );

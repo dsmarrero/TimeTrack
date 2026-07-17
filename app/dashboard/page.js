@@ -3,6 +3,7 @@ import { getCurrentEmployee } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import NavBar from "@/components/NavBar";
 import Cronometro from "@/components/Chrono";
+import ActiveEmployees from "@/components/ActiveEmployees";
 
 function formatMinutes(minutes) {
   const h = Math.floor(minutes / 60);
@@ -16,10 +17,11 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  const isAdmin = employee.role === "ADMIN";
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
 
-  const [activeEntry, projects, todayEntries] = await Promise.all([
+  const [activeEntry, projects, todayEntries, othersActiveEntries] = await Promise.all([
     prisma.timeEntry.findFirst({
       where: { employeeId: employee.id, endedAt: null },
       include: { project: true },
@@ -29,7 +31,21 @@ export default async function DashboardPage() {
       where: { employeeId: employee.id, startedAt: { gte: startOfDay }, durationMin: { gt: 0 } },
       include: { project: true },
     }),
+    isAdmin
+      ? prisma.timeEntry.findMany({
+          where: { endedAt: null, employeeId: { not: employee.id } },
+          include: { employee: true, project: true },
+          orderBy: { startedAt: "asc" },
+        })
+      : Promise.resolve([]),
   ]);
+
+  const activeEmployeeEntries = othersActiveEntries.map((entry) => ({
+    id: entry.id,
+    employeeName: entry.employee.name,
+    projectName: entry.project.name,
+    startedAt: entry.startedAt,
+  }));
 
   const byProject = new Map();
   for (const entry of todayEntries) {
@@ -43,20 +59,40 @@ export default async function DashboardPage() {
   return (
     <div>
       <NavBar />
-      <div className="p-8">
-        <h1 className="text-2xl font-semibold">Hola, {employee.name}</h1>
-        <Cronometro activeEntry={activeEntry} projects={projects} />
+      <div className="mx-auto max-w-3xl p-8">
+        <h1 className="text-2xl font-semibold text-foreground">Hola, {employee.name}</h1>
 
-        <h2 className="mt-6 text-lg font-semibold">Resumen del día</h2>
-        <ul className="mt-2 text-sm">
-          {[...byProject.entries()].map(([projectId, row]) => (
-            <li key={projectId}>
-              {row.name} — {formatMinutes(row.minutes)}
-            </li>
-          ))}
-          {byProject.size === 0 && <li>Sin tiempo registrado hoy</li>}
-        </ul>
-        <p className="mt-1 text-sm font-semibold">Total hoy: {formatMinutes(totalToday)}</p>
+        <div className="mt-4">
+          <Cronometro activeEntry={activeEntry} projects={projects} />
+        </div>
+
+        <div className="mt-6 rounded-xl border border-border p-6">
+          <h2 className="text-lg font-semibold text-foreground">Resumen del día</h2>
+          <ul className="mt-3 divide-y divide-border text-sm">
+            {[...byProject.entries()].map(([projectId, row]) => (
+              <li key={projectId} className="flex items-center justify-between py-2">
+                <span className="text-foreground/80">{row.name}</span>
+                <span className="font-mono text-foreground/60">{formatMinutes(row.minutes)}</span>
+              </li>
+            ))}
+            {byProject.size === 0 && (
+              <li className="py-2 text-foreground/50">Sin tiempo registrado hoy</li>
+            )}
+          </ul>
+          <p className="mt-3 flex items-center justify-between border-t border-border pt-3 text-sm font-semibold text-foreground">
+            <span>Total hoy</span>
+            <span className="font-mono">{formatMinutes(totalToday)}</span>
+          </p>
+        </div>
+
+        {isAdmin && (
+          <div className="mt-6 rounded-xl border border-border p-6">
+            <h2 className="text-lg font-semibold text-foreground">Trabajadores activos</h2>
+            <div className="mt-3">
+              <ActiveEmployees entries={activeEmployeeEntries} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

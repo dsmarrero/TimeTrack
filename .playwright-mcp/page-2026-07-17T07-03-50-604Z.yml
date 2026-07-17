@@ -1,0 +1,9 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - heading "TimeTrack" [level=1] [ref=e4]
+    - paragraph [ref=e5]: Inicia sesión para fichar tu tiempo
+    - generic [ref=e6]:
+      - textbox "Email" [ref=e7]
+      - textbox "Contraseña" [ref=e8]
+    - button "Entrar" [ref=e9]
+  - alert [ref=e10]

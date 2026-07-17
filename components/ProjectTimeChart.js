@@ -11,9 +11,9 @@ function formatMinutes(minutes) {
 function ChartTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-      <p className="font-medium">{label}</p>
-      <p className="text-zinc-600 dark:text-zinc-300">{formatMinutes(payload[0].value)}</p>
+    <div className="rounded-md border border-border bg-background px-3 py-2 text-sm shadow-sm">
+      <p className="font-medium text-foreground">{label}</p>
+      <p className="text-foreground/60">{formatMinutes(payload[0].value)}</p>
     </div>
   );
 }

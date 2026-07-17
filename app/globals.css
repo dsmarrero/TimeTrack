@@ -1,21 +1,36 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F7F5F0;
+  --foreground: #1C2321;
+  --brand: #0F4C3A;
+  --brand-hover: #0B3A2C;
+  --live: #D97706;
+  --danger: #B91C1C;
+  --border: #DEDACE;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-live: var(--live);
+  --color-danger: var(--danger);
+  --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #14171a;
+    --foreground: #ECEAE4;
+    --brand: #2E9E77;
+    --brand-hover: #3FBB8D;
+    --live: #F0A93E;
+    --danger: #F16060;
+    --border: #2A2E31;
   }
 }
 
@@ -23,19 +38,19 @@
   --chart-grid: #e1e0d9;
   --chart-axis: #c3c2b7;
   --chart-muted: #898781;
-  --chart-series-1: #2a78d6;
+  --chart-series-1: #0f4c3a;
 }
 @media (prefers-color-scheme: dark) {
   .viz-root {
     --chart-grid: #2c2c2a;
     --chart-axis: #383835;
     --chart-muted: #898781;
-    --chart-series-1: #3987e5;
+    --chart-series-1: #2e9e77;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }

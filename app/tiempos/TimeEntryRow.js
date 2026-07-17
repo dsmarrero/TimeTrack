@@ -25,29 +25,60 @@ export default function TimeEntryRow({ entry, projects, isAdmin }) {
     wasUpdatePending.current = updatePending;
   }, [updatePending, updateState, router]);
 
+  const inputClass =
+    "rounded-md border border-border bg-transparent px-3 py-2 text-sm text-foreground focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30";
+
+  const mobileLabelClass = "text-xs font-semibold uppercase tracking-wide text-foreground/40 md:hidden";
+
   if (editing) {
     return (
-      <tr className="border-t">
-        <td colSpan={isAdmin ? 6 : 5}>
-          <form action={updateAction} className="flex flex-wrap items-end gap-2 py-2">
+      <tr className="block rounded-lg border border-border p-4 md:table-row md:rounded-none md:border-0 md:p-0">
+        <td colSpan={isAdmin ? 6 : 5} className="block md:table-cell md:px-4 md:py-3">
+          <form action={updateAction} className="flex flex-wrap items-end gap-2">
             <input type="hidden" name="id" value={entry.id} />
-            <select name="projectId" defaultValue={entry.projectId} required>
+            <select name="projectId" defaultValue={entry.projectId} required className={inputClass}>
               {projects.map((project) => (
                 <option key={project.id} value={project.id}>
                   {project.name}
                 </option>
               ))}
             </select>
-            <input type="datetime-local" name="startedAt" defaultValue={toLocalInput(entry.startedAt)} required />
-            <input type="datetime-local" name="endedAt" defaultValue={toLocalInput(entry.endedAt)} required />
-            <input type="text" name="note" defaultValue={entry.note ?? ""} placeholder="Nota" />
-            <button type="submit" disabled={updatePending}>
-              Guardar
+            <input
+              type="datetime-local"
+              name="startedAt"
+              defaultValue={toLocalInput(entry.startedAt)}
+              required
+              className={inputClass}
+            />
+            <input
+              type="datetime-local"
+              name="endedAt"
+              defaultValue={toLocalInput(entry.endedAt)}
+              required
+              className={inputClass}
+            />
+            <input
+              type="text"
+              name="note"
+              defaultValue={entry.note ?? ""}
+              placeholder="Nota"
+              className={inputClass}
+            />
+            <button
+              type="submit"
+              disabled={updatePending}
+              className="rounded-md bg-brand px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {updatePending ? "Guardando..." : "Guardar"}
             </button>
-            <button type="button" onClick={() => setEditing(false)}>
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              className="rounded-md px-3 py-2 text-sm font-medium text-foreground/60 hover:text-foreground"
+            >
               Cancelar
             </button>
-            {updateState.error && <p className="text-red-600">{updateState.error}</p>}
+            {updateState.error && <p className="w-full text-sm text-danger">{updateState.error}</p>}
           </form>
         </td>
       </tr>
@@ -55,30 +86,61 @@ export default function TimeEntryRow({ entry, projects, isAdmin }) {
   }
 
   return (
-    <tr className="border-t">
-      <td>{entry.project.name}</td>
-      {isAdmin && <td>{entry.employee.name}</td>}
-      <td>{new Date(entry.startedAt).toLocaleString()}</td>
-      <td>{new Date(entry.endedAt).toLocaleString()}</td>
-      <td>{entry.note}</td>
-      <td className="flex gap-2">
-        <button type="button" onClick={() => setEditing(true)}>
-          Editar
-        </button>
-        <form
-          action={deleteAction}
-          onSubmit={(e) => {
-            if (!confirm("¿Eliminar esta entrada?")) {
-              e.preventDefault();
-            }
-          }}
-        >
-          <input type="hidden" name="id" value={entry.id} />
-          <button type="submit" disabled={deletePending}>
-            Eliminar
+    <tr className="block rounded-lg border border-border p-4 text-foreground/80 md:table-row md:rounded-none md:border-0 md:p-0">
+      <td className="flex items-center justify-between py-1 md:table-cell md:px-4 md:py-3">
+        <span className={mobileLabelClass}>Proyecto</span>
+        <span>{entry.project.name}</span>
+      </td>
+      {isAdmin && (
+        <td className="flex items-center justify-between py-1 md:table-cell md:px-4 md:py-3">
+          <span className={mobileLabelClass}>Empleado</span>
+          <span>{entry.employee.name}</span>
+        </td>
+      )}
+      <td className="flex items-center justify-between py-1 md:table-cell md:px-4 md:py-3">
+        <span className={mobileLabelClass}>Inicio</span>
+        <span className="font-mono text-foreground/60">
+          {new Date(entry.startedAt).toLocaleString()}
+        </span>
+      </td>
+      <td className="flex items-center justify-between py-1 md:table-cell md:px-4 md:py-3">
+        <span className={mobileLabelClass}>Fin</span>
+        <span className="font-mono text-foreground/60">
+          {new Date(entry.endedAt).toLocaleString()}
+        </span>
+      </td>
+      <td className="flex items-center justify-between py-1 md:table-cell md:px-4 md:py-3">
+        <span className={mobileLabelClass}>Nota</span>
+        <span className="text-right md:text-left">{entry.note}</span>
+      </td>
+      <td className="pt-2 md:table-cell md:px-4 md:py-3">
+        <div className="flex items-center justify-end gap-3 md:justify-start">
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            className="font-medium text-brand hover:underline"
+          >
+            Editar
           </button>
-        </form>
-        {deleteState.error && <p className="text-red-600">{deleteState.error}</p>}
+          <form
+            action={deleteAction}
+            onSubmit={(e) => {
+              if (!confirm("¿Eliminar esta entrada?")) {
+                e.preventDefault();
+              }
+            }}
+          >
+            <input type="hidden" name="id" value={entry.id} />
+            <button
+              type="submit"
+              disabled={deletePending}
+              className="font-medium text-danger hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Eliminar
+            </button>
+          </form>
+        </div>
+        {deleteState.error && <p className="mt-1 text-right text-sm text-danger md:text-left">{deleteState.error}</p>}
       </td>
     </tr>
   );

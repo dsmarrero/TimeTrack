@@ -57,22 +57,33 @@ export default async function ProjectDetailPage({ params }) {
   return (
     <div>
       <NavBar />
-      <div className="p-8">
-        <h1 className="text-2xl font-semibold">{project.name}</h1>
-        <p className="text-zinc-600">{project.description}</p>
-        <p className="mt-1 font-semibold">Tiempo total: {formatMinutes(totalMinutes)}</p>
+      <div className="mx-auto max-w-3xl p-8">
+        <h1 className="text-2xl font-semibold text-foreground">{project.name}</h1>
+        {project.description && <p className="mt-1 text-foreground/60">{project.description}</p>}
+        <p className="mt-2 font-mono text-sm font-semibold text-foreground">
+          Tiempo total: {formatMinutes(totalMinutes)}
+        </p>
 
-        {isAdmin && <ProjectEditForm key={project.updatedAt.toISOString()} project={project} />}
+        {isAdmin && (
+          <div className="mt-4 rounded-xl border border-border p-6">
+            <ProjectEditForm key={project.updatedAt.toISOString()} project={project} />
+          </div>
+        )}
 
-        <h2 className="mt-6 text-lg font-semibold">Desglose por empleado</h2>
-        <ul className="mt-2 text-sm">
-          {[...byEmployee.entries()].map(([employeeId, row]) => (
-            <li key={employeeId}>
-              {row.name} — {formatMinutes(row.minutes)}
-            </li>
-          ))}
-          {byEmployee.size === 0 && <li>Sin entradas registradas</li>}
-        </ul>
+        <div className="mt-6 rounded-xl border border-border p-6">
+          <h2 className="text-lg font-semibold text-foreground">Desglose por empleado</h2>
+          <ul className="mt-3 divide-y divide-border text-sm">
+            {[...byEmployee.entries()].map(([employeeId, row]) => (
+              <li key={employeeId} className="flex items-center justify-between py-2">
+                <span className="text-foreground/80">{row.name}</span>
+                <span className="font-mono text-foreground/60">{formatMinutes(row.minutes)}</span>
+              </li>
+            ))}
+            {byEmployee.size === 0 && (
+              <li className="py-2 text-foreground/50">Sin entradas registradas</li>
+            )}
+          </ul>
+        </div>
       </div>
     </div>
   );
